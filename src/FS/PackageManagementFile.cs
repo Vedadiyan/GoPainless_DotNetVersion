@@ -112,7 +112,21 @@ public class PackageManagementFile
         GenerateModFile();
         foreach (var i in goModule.Packages)
         {
-            AddPackage(i.Value.Uri!, i.Key, i.Value.Private);
+            if (!i.Value.Private)
+            {
+                getPackage(i.Value.Uri!);
+
+            }
+            else
+            {
+                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string packageFolder = Path.Combine(appDataFolder, ".go.painless");
+                string packagePath = Path.Combine(packageFolder, i.Key);
+                if (!Directory.Exists(packagePath))
+                {
+                    getPrivatePackage(i.Value.Uri!, i.Key);
+                }
+            }
         }
     }
     public async Task WriteAsync()
@@ -153,7 +167,7 @@ public class PackageManagementFile
             output.AppendLine(@$"require {i.Key} v1.0.0");
         }
         await File.WriteAllTextAsync("go.mod", output.ToString());
-        await File.WriteAllTextAsync(packageManagementFileName, JsonSerializer.Serialize(goModule));
+        await File.WriteAllTextAsync(packageManagementFileName, JsonSerializer.Serialize(goModule, new JsonSerializerOptions { WriteIndented = true }));
     }
     private bool getPackage(string url)
     {

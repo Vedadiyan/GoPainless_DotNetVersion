@@ -6,10 +6,11 @@ namespace GoPainless;
 
 public class Program {
     public static void Main(string[] args) {
-        CommandLine.Parser.Default.ParseArguments(args).WithParsed(x=> {
+        CommandLine.Parser.Default.ParseArguments(args, typeof(Initialize), typeof(InstallPackage), typeof(RemovePackage), typeof(RestorePackages)).WithParsed(x=> {
             if (x is Initialize initialize) {
                 PackageManagementFile packageManagementFile = new PackageManagementFile(initialize.Name!, initialize.Version!);
                 packageManagementFile.GenerateModFile();
+                packageManagementFile.Create();
             }
             else if (x is InstallPackage installPackage) {
                 PackageManagementFile packageManagementFile = new PackageManagementFile();
