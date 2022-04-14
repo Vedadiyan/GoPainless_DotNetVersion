@@ -31,9 +31,9 @@ public class PackageManagementFile
         string goModuleJson = File.ReadAllText(packageManagementFileName);
         goModule = JsonSerializer.Deserialize<GoModule>(goModuleJson) ?? throw new Exception("Corrupted file");
     }
-    public void GenerateModFile()
+    public void GenerateModFile(string name)
     {
-        if (!run("go", $"mod init {goModule.Name}"))
+        if (!run("go", $"mod init {name}"))
         {
             throw new Exception("Could not create mod file");
         }
@@ -47,7 +47,7 @@ public class PackageManagementFile
         string goModuleJson = JsonSerializer.Serialize(goModule);
         File.WriteAllText(packageManagementFileName, goModuleJson);
     }
-    public void AddPackage(string uri, string name, bool @private, bool update = false)
+    public void AddPackage(string uri, string name, bool @private, bool update = false, bool recursive = false)
     {
         if (!goModule.Packages.TryGetValue(name, out GoPackage? goPackage))
         {
@@ -72,11 +72,11 @@ public class PackageManagementFile
                 string packagePath = Path.Combine(packageFolder, name);
                 if (update || !Directory.Exists(packagePath))
                 {
-                    if (getPrivatePackage(uri, name))
+                    if (getPrivatePackage(uri, name, recursive))
                     {
                         goPackage = new GoPackage
                         {
-                            Uri = packagePath,
+                            Uri = uri,
                             Private = @private
                         };
                         goModule.Packages.Add(name, goPackage);
@@ -87,7 +87,7 @@ public class PackageManagementFile
                 {
                     goPackage = new GoPackage
                     {
-                        Uri = packagePath,
+                        Uri = uri,
                         Private = @private
                     };
                     goModule.Packages.Add(name, goPackage);
@@ -107,9 +107,9 @@ public class PackageManagementFile
             goModule.Packages.Remove(name);
         }
     }
-    public void RestorePackages()
+    public void RestorePackages(bool recursive)
     {
-        GenerateModFile();
+        GenerateModFile(goModule.Name!);
         foreach (var i in goModule.Packages)
         {
             if (!i.Value.Private)
@@ -124,7 +124,7 @@ public class PackageManagementFile
                 string packagePath = Path.Combine(packageFolder, i.Key);
                 if (!Directory.Exists(packagePath))
                 {
-                    getPrivatePackage(i.Value.Uri!, i.Key);
+                    getPrivatePackage(i.Value.Uri!, i.Key, recursive);
                 }
             }
         }
@@ -173,7 +173,7 @@ public class PackageManagementFile
     {
         return run("go", $"get {url}");
     }
-    private bool getPrivatePackage(string url, string name)
+    private bool getPrivatePackage(string url, string name, bool recursive = false)
     {
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         string packageFolder = Path.Combine(appDataFolder, ".go.painless\\");
@@ -181,7 +181,13 @@ public class PackageManagementFile
         {
             Directory.CreateDirectory(packageFolder);
         }
-        return run("git", $"clone {url} {name}", packageFolder);
+        run("git", $"clone {url} {name}", packageFolder);
+        if (recursive)
+        {
+            GenerateModFile(name);
+            run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", "go-painless.exe"), $"restore", Path.Combine(packageFolder, name));
+        }
+        return true;
     }
 
     private bool run(string fileName, string args, string? workingDirectory = null)

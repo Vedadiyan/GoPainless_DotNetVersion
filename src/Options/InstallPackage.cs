@@ -13,4 +13,6 @@ public class InstallPackage
     public bool Private { get; set; }
     [Option("force", Required = false, HelpText = "Force updating existing package")]
     public bool Force { get; set; }
+    [Option("recursive", Required = false, HelpText = "Recursively loads packages within packages")]
+    public bool Recursive { get; set; }
 }
