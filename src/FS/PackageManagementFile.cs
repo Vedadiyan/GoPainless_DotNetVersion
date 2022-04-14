@@ -25,15 +25,18 @@ public class PackageManagementFile
             Name = name,
             Version = version
         };
-        if (!run("go", $"mod init {name}"))
-        {
-            throw new Exception("Could not create mod file");
-        }
     }
     public PackageManagementFile()
     {
         string goModuleJson = File.ReadAllText(packageManagementFileName);
         goModule = JsonSerializer.Deserialize<GoModule>(goModuleJson) ?? throw new Exception("Corrupted file");
+    }
+    public void GenerateModFile()
+    {
+        if (!run("go", $"mod init {goModule.Name}"))
+        {
+            throw new Exception("Could not create mod file");
+        }
     }
     public void Create()
     {
@@ -102,6 +105,14 @@ public class PackageManagementFile
         if (goModule.Packages.TryGetValue(name, out GoPackage? goPackage))
         {
             goModule.Packages.Remove(name);
+        }
+    }
+    public void RestorePackages()
+    {
+        GenerateModFile();
+        foreach (var i in goModule.Packages)
+        {
+            AddPackage(i.Value.Uri!, i.Key, i.Value.Private);
         }
     }
     public async Task WriteAsync()
