@@ -66,10 +66,10 @@ public class PackageManagementFile
             {
                 string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 string packageFolder = Path.Combine(appDataFolder, ".go.painless");
-                string packagePath = Path.Combine(packageFolder, uri.Split('/').LastOrDefault()?.Split('.').FirstOrDefault() ?? throw new ArgumentException("Invalid private repository URI"));
+                string packagePath = Path.Combine(packageFolder, name);
                 if (update || !Directory.Exists(packagePath))
                 {
-                    if (getPrivatePackage(uri))
+                    if (getPrivatePackage(uri, name))
                     {
                         goPackage = new GoPackage
                         {
@@ -148,7 +148,7 @@ public class PackageManagementFile
     {
         return run("go", $"get {url}");
     }
-    private bool getPrivatePackage(string url)
+    private bool getPrivatePackage(string url, string name)
     {
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         string packageFolder = Path.Combine(appDataFolder, ".go.painless\\");
@@ -156,7 +156,7 @@ public class PackageManagementFile
         {
             Directory.CreateDirectory(packageFolder);
         }
-        return run("git", $"clone {url}", packageFolder);
+        return run("git", $"clone {url} {name}", packageFolder);
     }
 
     private bool run(string fileName, string args, string? workingDirectory = null)
