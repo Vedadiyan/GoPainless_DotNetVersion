@@ -168,7 +168,7 @@ public class PackageManagementFile
         }
         await File.WriteAllTextAsync("go.mod", output.ToString());
         await File.WriteAllTextAsync(packageManagementFileName, JsonSerializer.Serialize(goModule, new JsonSerializerOptions { WriteIndented = true }));
-        run("go", "mod tidy", packageFolder);
+        run("go", "mod tidy");
     }
     private bool getPackage(string url)
     {
