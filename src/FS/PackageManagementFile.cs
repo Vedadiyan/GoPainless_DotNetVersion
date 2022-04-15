@@ -67,8 +67,8 @@ public class PackageManagementFile
             }
             else
             {
-                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                string packageFolder = Path.Combine(appDataFolder, "go.painless");
+                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string packageFolder = Path.Combine(appDataFolder, "go-painless", "packages");
                 string packagePath = Path.Combine(packageFolder, name);
                 if (update || !Directory.Exists(packagePath))
                 {
@@ -119,20 +119,20 @@ public class PackageManagementFile
             }
             else
             {
-                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                string packageFolder = Path.Combine(appDataFolder, "go.painless");
+                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string packageFolder = Path.Combine(appDataFolder, "go-painless", "packages");
                 string packagePath = Path.Combine(packageFolder, i.Key);
                 if (!Directory.Exists(packagePath))
                 {
-                    getPrivatePackage(i.Value.Uri!, i.Key, recursive);
+                    getPrivatePackage(i.Value.Uri!, i.Key, File.Exists(Path.Combine(packagePath, "package.json")));
                 }
             }
         }
     }
     public async Task WriteAsync()
     {
-        string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        string packageFolder = Path.Combine(appDataFolder, "go.painless");
+        string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string packageFolder = Path.Combine(appDataFolder, "go-painless", "packages");
         string[] goModFile = await File.ReadAllLinesAsync("go.mod");
         List<string> buffer = new List<string>();
         StringBuilder output = new StringBuilder();
@@ -175,8 +175,8 @@ public class PackageManagementFile
     }
     private bool getPrivatePackage(string url, string name, bool recursive = false)
     {
-        string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        string packageFolder = Path.Combine(appDataFolder, "go.painless\\");
+        string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string packageFolder = Path.Combine(appDataFolder, "go-painless\\");
         if (!Directory.Exists(packageFolder))
         {
             Directory.CreateDirectory(packageFolder);
@@ -187,6 +187,7 @@ public class PackageManagementFile
             GenerateModFile(name);
             run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", "go-painless.exe"), $"restore", Path.Combine(packageFolder, name));
         }
+        run("go", "mod tidy", packageFolder);
         return true;
     }
 
