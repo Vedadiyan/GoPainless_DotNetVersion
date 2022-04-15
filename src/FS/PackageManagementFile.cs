@@ -177,7 +177,7 @@ public class PackageManagementFile
     private bool getPrivatePackage(string url, string name, bool recursive = false)
     {
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        string packageFolder = Path.Combine(appDataFolder, "go-painless\\");
+        string packageFolder = Path.Combine(appDataFolder, "go-painless", "packages");
         if (!Directory.Exists(packageFolder))
         {
             Directory.CreateDirectory(packageFolder);
@@ -188,7 +188,7 @@ public class PackageManagementFile
             GenerateModFile(name);
             run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", "go-painless.exe"), $"restore", Path.Combine(packageFolder, name));
         }
-        run("go", "mod tidy", packageFolder);
+        run("go", "mod tidy", Path.Combine(packageFolder, name));
         return true;
     }
 
