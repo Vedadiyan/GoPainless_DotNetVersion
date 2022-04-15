@@ -8,7 +8,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        CommandLine.Parser.Default.ParseArguments(args, typeof(Initialize), typeof(InstallPackage), typeof(RemovePackage), typeof(RestorePackages)).WithParsed(x =>
+        CommandLine.Parser.Default.ParseArguments(args, typeof(Initialize), typeof(InstallPackage), typeof(RemovePackage), typeof(RestorePackages), typeof(Tidy)).WithParsed(x =>
         {
             if (x is Initialize initialize)
             {
@@ -33,6 +33,10 @@ public class Program
                 PackageManagementFile packageManagementFile = new PackageManagementFile();
                 packageManagementFile.RestorePackages(true);
                 packageManagementFile.WriteAsync().Wait();
+            }
+            else if (x is Tidy tidy)
+            {
+                PackageManagementFile.Tidy();
             }
         });
     }

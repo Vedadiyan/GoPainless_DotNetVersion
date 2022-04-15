@@ -80,6 +80,7 @@ public class PackageManagementFile
                             Private = @private
                         };
                         goModule.Packages.Add(name, goPackage);
+                        run("go", "mod tidy", packagePath);
                         return;
                     }
                 }
@@ -124,8 +125,14 @@ public class PackageManagementFile
                 string packagePath = Path.Combine(packageFolder, i.Key);
                 if (!Directory.Exists(packagePath))
                 {
-                    getPrivatePackage(i.Value.Uri!, i.Key, File.Exists(Path.Combine(packagePath, "package.json")));
+                    getPrivatePackage(i.Value.Uri!, i.Key);
+                    if (File.Exists(Path.Combine(packagePath, "package.json")))
+                    {
+                        GenerateModFile(i.Key);
+                        run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", "go-painless.exe"), $"restore", Path.Combine(packageFolder, i.Key));
+                    }
                 }
+                run("go", "mod tidy", packagePath);
             }
         }
     }
@@ -168,6 +175,9 @@ public class PackageManagementFile
         }
         await File.WriteAllTextAsync("go.mod", output.ToString());
         await File.WriteAllTextAsync(packageManagementFileName, JsonSerializer.Serialize(goModule, new JsonSerializerOptions { WriteIndented = true }));
+    }
+    public static void Tidy()
+    {
         run("go", "mod tidy");
     }
     private bool getPackage(string url)
@@ -188,11 +198,10 @@ public class PackageManagementFile
             GenerateModFile(name);
             run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", "go-painless.exe"), $"restore", Path.Combine(packageFolder, name));
         }
-        run("go", "mod tidy", Path.Combine(packageFolder, name));
         return true;
     }
 
-    private bool run(string fileName, string args, string? workingDirectory = null)
+    private static bool run(string fileName, string args, string? workingDirectory = null)
     {
         string currentDirectory = Environment.CurrentDirectory;
         ProcessStartInfo processStartInfo = new ProcessStartInfo(fileName, args);
