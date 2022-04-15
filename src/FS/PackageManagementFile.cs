@@ -68,7 +68,7 @@ public class PackageManagementFile
             else
             {
                 string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                string packageFolder = Path.Combine(appDataFolder, ".go.painless");
+                string packageFolder = Path.Combine(appDataFolder, "go.painless");
                 string packagePath = Path.Combine(packageFolder, name);
                 if (update || !Directory.Exists(packagePath))
                 {
@@ -120,7 +120,7 @@ public class PackageManagementFile
             else
             {
                 string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                string packageFolder = Path.Combine(appDataFolder, ".go.painless");
+                string packageFolder = Path.Combine(appDataFolder, "go.painless");
                 string packagePath = Path.Combine(packageFolder, i.Key);
                 if (!Directory.Exists(packagePath))
                 {
@@ -132,7 +132,7 @@ public class PackageManagementFile
     public async Task WriteAsync()
     {
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        string packageFolder = Path.Combine(appDataFolder, ".go.painless");
+        string packageFolder = Path.Combine(appDataFolder, "go.painless");
         string[] goModFile = await File.ReadAllLinesAsync("go.mod");
         List<string> buffer = new List<string>();
         StringBuilder output = new StringBuilder();
@@ -176,7 +176,7 @@ public class PackageManagementFile
     private bool getPrivatePackage(string url, string name, bool recursive = false)
     {
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        string packageFolder = Path.Combine(appDataFolder, ".go.painless\\");
+        string packageFolder = Path.Combine(appDataFolder, "go.painless\\");
         if (!Directory.Exists(packageFolder))
         {
             Directory.CreateDirectory(packageFolder);
