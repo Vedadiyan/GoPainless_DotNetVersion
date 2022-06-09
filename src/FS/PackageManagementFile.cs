@@ -70,7 +70,12 @@ public class PackageManagementFile
                 string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 string packageFolder = Path.Combine(appDataFolder, "go-painless", "packages");
                 string packagePath = Path.Combine(packageFolder, name);
-                if (update || !Directory.Exists(packagePath))
+                bool dirExists = Directory.Exists(packagePath);
+                if(update && dirExists) {
+                    Directory.Delete(packagePath);
+                    dirExists = false;
+                }
+                if (!dirExists)
                 {
                     if (getPrivatePackage(uri, name, recursive))
                     {
