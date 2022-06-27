@@ -71,8 +71,10 @@ public class PackageManagementFile
                 string packageFolder = Path.Combine(appDataFolder, "go-painless", "packages");
                 string packagePath = Path.Combine(packageFolder, name);
                 bool dirExists = Directory.Exists(packagePath);
-                if(update && dirExists) {
-                    Directory.Delete(packagePath);
+                if (update && dirExists)
+                {
+                    Console.WriteLine("Deleteing {0}", packagePath);
+                    delete(packagePath);
                     dirExists = false;
                 }
                 if (!dirExists)
@@ -113,7 +115,7 @@ public class PackageManagementFile
             goModule.Packages.Remove(name);
         }
     }
-    public void RestorePackages(bool recursive)
+    public void RestorePackages(bool recursive, bool update = false)
     {
         GenerateModFile(goModule.Name!);
         foreach (var i in goModule.Packages)
@@ -128,7 +130,14 @@ public class PackageManagementFile
                 string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 string packageFolder = Path.Combine(appDataFolder, "go-painless", "packages");
                 string packagePath = Path.Combine(packageFolder, i.Key);
-                if (!Directory.Exists(packagePath))
+                bool dirExists = Directory.Exists(packagePath);
+                if (update && dirExists)
+                {
+                    Console.WriteLine("Deleteing {0}", packagePath);
+                    delete(packagePath);
+                    dirExists = false;
+                }
+                if (!dirExists)
                 {
                     getPrivatePackage(i.Value.Uri!, i.Key);
                     if (File.Exists(Path.Combine(packagePath, "package.json")))
@@ -184,6 +193,12 @@ public class PackageManagementFile
     public static void Tidy()
     {
         run("go", "mod tidy");
+    }
+    public static void Build(string goos, string goarch, string output, string target)
+    {
+        Environment.SetEnvironmentVariable("GOOS", goos);
+        Environment.SetEnvironmentVariable("GOARCH", goarch);
+        run("go", $"build -o {output} {target}");
     }
     private bool getPackage(string url)
     {
@@ -244,5 +259,22 @@ public class PackageManagementFile
         process.WaitForExit();
         Environment.CurrentDirectory = currentDirectory;
         return !hasErrors;
+    }
+    private void delete(string path, string basePath = "")
+    {
+        string _path = Path.Combine(basePath, path);
+        string[] files = Directory.GetFiles(_path);
+        foreach (var file in files)
+        {
+            FileInfo fileInfo = new FileInfo(Path.Combine(_path, file));
+            fileInfo.Attributes = FileAttributes.Normal;
+            File.Delete(file);
+        }
+        string[] directories = Directory.GetDirectories(_path);
+        foreach (var directory in directories)
+        {
+            delete(directory, _path);
+        }
+        Directory.Delete(_path);
     }
 }
