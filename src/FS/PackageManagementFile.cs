@@ -200,6 +200,17 @@ public class PackageManagementFile
         Environment.SetEnvironmentVariable("GOARCH", goarch);
         run("go", $"build -o {output} {target}");
     }
+    public static void Clean()
+    {
+        if (File.Exists("go.mod"))
+        {
+            File.Delete("go.mod");
+        }
+        if (File.Exists("go.sum"))
+        {
+            File.Delete("go.sum");
+        }
+    }
     private bool getPackage(string url)
     {
         return run("go", $"get {url}");
