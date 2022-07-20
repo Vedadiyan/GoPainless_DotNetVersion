@@ -41,6 +41,6 @@ Mac: <br />
 | build | builds a go project | go-painless build -R linux -A amd64 -O ./ -T ./cmd/ | -R = specifies target OS <br /> -A = specifies target architecture <br /> -O = specifies the output directory <br /> -T = specifies the go file or folder to build 
 
 ### Tips
-It is recommended to always use `go-painless tidy` after `go-painless restore`.  This because `go-painless` is a complement to the original `go` command. 
+It is recommended to always use `go-painless tidy` after `go-painless restore`.  This is because `go-painless` is a complement to the original `go` command. 
 When using `go-painless`, the project has to be initiated using `go-painless initialize` and all dependencies have to be maintained using the `go-painless install` commands.
 
