@@ -6,14 +6,19 @@ Windows: <br />
 Build the project using the following command `dotnet publish -c release -r win-x64 -o publish -P:PublishSingleFile`. Rename the file to `go-painless.exe` and place it in `C:\Users\[User]\go-painless\bin`
 <br />
 Linux: <br />
-`
-dotnet publish -c release -r linux-x64 -o ./publish -p:PublishSingleFile=true 
-mv GoPainless go-painless
-mkdir /root/go-painless
-mkdir /root/go-painless/bin
-cp go-painless /root/go-painless/bin
-cp /root/go-painless/bin/go-painless /root/go-painless/bin/go-painless.exe
-`
+`dotnet publish -c release -r linux-x64 -o ./publish -p:PublishSingleFile=true`
+<br />
+`mv GoPainless go-painless`
+<br />
+`mkdir /root/go-painless`
+<br />
+`mkdir /root/go-painless/bin`
+<br />
+`cp go-painless /root/go-painless/bin`
+<br />
+`cp /root/go-painless/bin/go-painless /root/go-painless/bin/go-painless.exe`
+<br />
+* replace `root` with proper user
 <br />
 Mac: <br />
 ... Coming up
