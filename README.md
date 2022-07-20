@@ -7,7 +7,7 @@ Go-Painless is a simple painless package manager that resembles core features an
 
 |Command| Description  | Example | Notes |
 |--|--|--|--|
-| initialize | creates a new go project  | go-painless initialize -N demo -V v1.0.0| -N = the name of the project (required) <br /> -V = the version of the project 
+| initialize | creates a new go project  | go-painless initialize -N demo -V v1.0.0| -N = the name of the project <br /> -V = the version of the project 
 |install| installs a go dependency | go-painless install -U https://github.com/abc/efg.git -N custom_dependency_name --private --recursive | -U = the URL of the dependency (whether private or public) <br /> -N = the name used to reference the dependency. This name is used for referencing private packages.  <br />  --private = used for installing private packages <br /> --recursive = used for installing nested dependencies in go-painless maintained packages <br /> --force = used for force updating existing packages <br /> --global = used for installing packages globally (Experimental) 
 | remove | removes a go dependency | go-painless remove -N custom_dependency_name | -N = the name of the dependency to be removed
 | restore | restores all dependencies | go-painless restore | --update = used for updating existing dependency <br /> --update-global = used for updating global dependencies (Experimental) <br /> --tidy = runs `go mod tidy` after the restore has completed 
