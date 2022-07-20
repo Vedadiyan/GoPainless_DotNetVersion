@@ -30,9 +30,22 @@ public class Program
             }
             else if (x is RestorePackages restorePackages)
             {
+                PackageManagementFile.Clean();
                 PackageManagementFile packageManagementFile = new PackageManagementFile();
-                packageManagementFile.RestorePackages(true);
+                packageManagementFile.RestorePackages(true, restorePackages.Update);
                 packageManagementFile.WriteAsync().Wait();
+                if (restorePackages.Tidy)
+                {
+                    PackageManagementFile.Tidy();
+                }
+            }
+            else if (x is Build build)
+            {
+                PackageManagementFile.Build(build.Os!, build.Architecture!, build.Output!, build.Target!);
+            }
+            else if (x is Clean clean)
+            {
+                PackageManagementFile.Clean();
             }
             else if (x is Tidy tidy)
             {

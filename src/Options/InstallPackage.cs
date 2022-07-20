@@ -15,4 +15,6 @@ public class InstallPackage
     public bool Force { get; set; }
     [Option("recursive", Required = false, HelpText = "Recursively loads packages within packages")]
     public bool Recursive { get; set; }
+    [Option("global", Required = false, HelpText = "Makes the package globally visible")]
+    public bool Global { get; set; }
 }
