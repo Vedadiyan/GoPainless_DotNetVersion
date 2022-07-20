@@ -18,7 +18,7 @@ Linux: <br />
 <br />
 `cp /root/go-painless/bin/go-painless /root/go-painless/bin/go-painless.exe` 
 <br />
-*`go-painless.exe` is still required for the program to behave correctly. This issue will be fixed in the releases*
+*`go-painless.exe` is still required for the program to behave correctly. This issue will be fixed in the next releases*
 <br />
 * Add the binary to the path variables.
 * Replace `root` with proper user
