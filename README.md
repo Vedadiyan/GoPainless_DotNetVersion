@@ -8,6 +8,8 @@ Build the project using the following command `dotnet publish -c release -r win-
 Linux: <br />
 `dotnet publish -c release -r linux-x64 -o ./publish -p:PublishSingleFile=true`
 <br />
+`cd /build/GoPainless/publish`
+<br />
 `mv GoPainless go-painless`
 <br />
 `mkdir /root/go-painless`
