@@ -19,7 +19,6 @@ Linux: <br />
 `cp /root/go-painless/bin/go-painless /root/go-painless/bin/go-painless.exe`
 <br />
 * replace `root` with proper user
-<br />
 Mac: <br />
 ... Coming up
 
