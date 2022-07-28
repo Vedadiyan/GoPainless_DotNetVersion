@@ -3,7 +3,7 @@ Go-Painless is a simple painless package manager that resembles core features an
 
 ## Installation Guid
 Windows: <br />
-Build the project using the following command `dotnet publish -c release -r win-x64 -o publish -P:PublishSingleFile`. Rename the file to `go-painless.exe` and place it in `C:\Users\[User]\go-painless\bin`. Add the binary to the path variables.
+Build the project using the following command `dotnet publish -c release -r win-x64 -o publish -p:PublishSingleFile=true`. Rename the file to `go-painless.exe` and place it in `C:\Users\[User]\go-painless\bin`. Add the binary to the path variables.
 <br />
 Linux: <br />
 `dotnet publish -c release -r linux-x64 -o ./publish -p:PublishSingleFile=true`
