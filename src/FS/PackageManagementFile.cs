@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -6,10 +7,36 @@ using GoPainless.Models;
 
 namespace GoPainless.FS;
 
+public enum OperatingSystems
+{
+    LINUX,
+    WINDOWS,
+    MAC
+}
+
 public class PackageManagementFile
 {
     private const string packageManagementFileName = "package.json";
     private readonly GoModule goModule;
+    private static readonly OperatingSystems os;
+    private static readonly string goPainlessFileName;
+    static PackageManagementFile()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            os = OperatingSystems.LINUX;
+            goPainlessFileName = "go-painless";
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            os = OperatingSystems.WINDOWS;
+            goPainlessFileName = "go-painless.exe";
+        }
+        else { 
+            os = OperatingSystems.MAC;
+            goPainlessFileName = "go-painless.dmg";
+        }
+    }
     public PackageManagementFile(string name, string version)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -139,11 +166,12 @@ public class PackageManagementFile
                 }
                 if (!dirExists)
                 {
+
                     getPrivatePackage(i.Value.Uri!, i.Key);
                     if (File.Exists(Path.Combine(packagePath, "package.json")))
                     {
                         GenerateModFile(i.Key);
-                        run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", "go-painless.exe"), $"restore", Path.Combine(packageFolder, i.Key));
+                        run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", goPainlessFileName), $"restore", Path.Combine(packageFolder, i.Key));
                     }
                 }
                 run("go", "mod tidy", packagePath);
@@ -227,7 +255,7 @@ public class PackageManagementFile
         if (recursive)
         {
             GenerateModFile(name);
-            run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", "go-painless.exe"), $"restore", Path.Combine(packageFolder, name));
+            run(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "go-painless", "bin", goPainlessFileName), $"restore", Path.Combine(packageFolder, name));
         }
         return true;
     }

@@ -8,7 +8,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        CommandLine.Parser.Default.ParseArguments(args, typeof(Initialize), typeof(InstallPackage), typeof(RemovePackage), typeof(RestorePackages), typeof(Tidy)).WithParsed(x =>
+        CommandLine.Parser.Default.ParseArguments(args, typeof(Build), typeof(Clean), typeof(Initialize), typeof(InstallPackage), typeof(RemovePackage), typeof(RestorePackages), typeof(Tidy)).WithParsed(x =>
         {
             if (x is Initialize initialize)
             {
