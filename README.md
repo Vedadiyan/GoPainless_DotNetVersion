@@ -1,3 +1,6 @@
+# Note
+Go-Painless has been re-written in Golang and it has been moved to a new repository. Please use the other project for latest updates.
+
 # Go Painless (a Golang package manager)
 Go-Painless is a simple painless package manager that resembles core features and mechanism of npm. It manages and maintains all project's dependencies in a `.json` file allowing them to be restored when required without relying on the `go.mod` and `go.sum` files. When a restore operation is requested, go-painless will automatically create `go.mod` and `go.sum` files both for the current project and all its dependencies. Accordingly, `go.mod` and `go.mod` can be added to the `.gitignore` file. 
 
